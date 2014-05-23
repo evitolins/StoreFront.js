@@ -3,6 +3,7 @@ StoreFront.js
 
 A store.js extension adding a basic data schema, value defaults, and input validation.
 
+> NOTE: This project is currently in alpha.  Features may not yet work as advertised.
 
 ## What?
 StoreFront allows users to set a schema/default values for store.js.
