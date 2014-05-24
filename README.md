@@ -8,7 +8,7 @@ A store.js extension adding a basic data schema, value defaults, and input valid
 ## What?
 StoreFront allows users to set a schema/default values for store.js.
 
-StoreFront also acts as a buffer between store.js and your application.  All your '''get()''' queries access a synced object instead of constantly utilizing the browser's storage API.  In theory, this should speed up performance when data is accessed frequently.
+As a bonus, StoreFront also acts as a buffer between store.js and your application.  All your '''get()''' queries access a synced object instead of constantly utilizing the browser's storage API.  In theory, this should speed up performance when data is accessed at a high frequency.
 
 
 ## Why?
