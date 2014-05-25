@@ -1,0 +1,28 @@
+{
+  "name": "StoreFront.js",
+  "main": "StoreFront.js",
+  "version": "0.0.0",
+  "homepage": "https://github.com/evitolins/StoreFront.js",
+  "authors": [
+    "Eriks Vitolins <evitolins@gmail.com>"
+  ],
+  "description": "A store.js extension adding a basic data schema, value defaults, and input validation.",
+  "keywords": [
+    "store.js",
+    "schema",
+    "validation",
+    "extension",
+    "localStorage"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "store.js": "v1.3.16"
+  }
+}
