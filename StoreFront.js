@@ -1,5 +1,5 @@
 /*jslint
-browser: true, devel: true, plusplus: true, unparam: true, todo: true, vars: true, white: true
+browser: true, devel: true, plusplus: true, unparam: true, todo: true, vars: true, white: true, nomen: true
 */
 
 /*global store */
@@ -11,7 +11,9 @@ var StoreFront = function (defaults) { "use strict";
         
         _set = function (prop, value) {
             _local[prop] = value;
-            if (store.enabled && _defaults.hasOwnProperty(prop)) store.set(prop, value);
+            if (store.enabled && _defaults.hasOwnProperty(prop)) {
+                store.set(prop, value);
+            }
         },
 
         _get = function (prop) {
@@ -24,7 +26,9 @@ var StoreFront = function (defaults) { "use strict";
 
         _remove = function (prop) {
             delete _local.prop;
-            if (store.enabled) store.remove(prop);
+            if (store.enabled) {
+                store.remove(prop);
+            }
         },
 
         _reset = function () {
@@ -37,7 +41,7 @@ var StoreFront = function (defaults) { "use strict";
         },
 
         _init = function () {
-            var stored, prop;
+            var prop;
           
             if (!store.enabled) {
                 console.log('Store.js not found.  Session options will not be saved.');
