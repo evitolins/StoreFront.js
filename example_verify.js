@@ -2,30 +2,11 @@
  * This page is more of an experiment at the time being
  */
 
-// Type Detection (via lodash)
-var get_dataTypes = function (val) {
-    var type = [];
-    if (_.isArguments(val)) type.push("isArguments");
-    if (_.isArray(val)) type.push("isArray");
-    if (_.isBoolean(val)) type.push("isBoolean");
-    if (_.isDate(val)) type.push("isDate");
-    if (_.isElement(val)) type.push("isElement");
-    if (_.isEmpty(val)) type.push("isEmpty");
-    if (_.isEqual(val)) type.push("isEqual");
-    if (_.isFinite(val)) type.push("isFinite");
-    if (_.isFunction(val)) type.push("isFunction");
-    if (_.isNaN(val)) type.push("isNaN");
-    if (_.isNull(val)) type.push("isNull");
-    if (_.isNumber(val)) type.push("isNumber");
-    if (_.isObject(val)) type.push("isObject");
-    if (_.isPlainObject(val)) type.push("isPlainObject");
-    if (_.isRegExp(val)) type.push("isRegExp");
-    if (_.isString(val)) type.push("isString");
-    if (_.isUndefined(val)) type.push("isUndefined");
-    return type;
-};
-
-// Simple Verification
+/**
+ * Simple Verification Methods (leveraging lodash)
+ * 'val' is required. All other arguments are optional.
+ * @type {Object}
+ */
 var isValid = {
     boolean  : function (val) {
         return _.isBoolean(val);
@@ -34,6 +15,9 @@ var isValid = {
         var regExValid = (regEx !== undefined && _.isRegExp(regEx)) ? regEx.test(val) : true;
         return (_.isString(val) && regExValid);
     },
+    func     : function (val) {
+        return _.isFunction(val);
+    },
     int      : function (val, min, max) {
         var minValid = (min !== undefined && _.isNumber(min)) ? (val >= min) : true;
         var maxValid = (max !== undefined && _.isNumber(max)) ? (val <= max) : true;
@@ -41,11 +25,8 @@ var isValid = {
     },
     float    : function (val, min, max) {
         var minValid = (min !== undefined && _.isNumber(min)) ? (val >= min) : true;
-        var maxValid = (max !== undefined && _.isNumber(max)) ? (val <= max) : true;        
+        var maxValid = (max !== undefined && _.isNumber(max)) ? (val <= max) : true;
         return (_.isNumber(val) && val % 1 !== 0 && minValid && maxValid);
-    },
-    func     : function (val) {
-        return _.isFunction(val);
     },
     array    : function (val, length, validateChildren) {
         var parValid = (_.isArray(val) && val.length <= length),
@@ -68,7 +49,7 @@ var isValid = {
             p;
         if (typeof validateChildren === "function") {
             for (p in val) {
-                if (val.hasOwnProperty(p) && !validateChildren(val[p])) {            
+                if (val.hasOwnProperty(p) && !validateChildren(val[p])) {
                     console.log('invalid prop match: ' + p + ' : ' + val[p]);
                     childenValid = false;
                     break;
@@ -79,44 +60,21 @@ var isValid = {
     }
 };
 
-var regExs = {
-    hexColor : /(^#[0-9A-F]{6}$)|(^#[0-9A-F]{3}$)/i
-};
-
 
 var verifyData = function (schema, tests) {
     // Scan Schema for Types & Lengths
-    var lengths = {},
-        types = {},
-        tested = {},
-        type, len, p;
+    var tested = {},
+        p;
 
-    for (p in schema) {
-        if (schema.hasOwnProperty(p)) {
-
-            // Collect Data Type
-            type = get_dataTypes(schema[p]);
-            types[p] = type;
-
-            // Check Array Lengths
-            if (typeof schema[p] === "object" && schema[p] && schema[p].length) {
-                lengths[p] = schema[p].length;
+    if (tests) {
+        for (p in schema) {
+            if (schema.hasOwnProperty(p)) {
+                tested[p] = tests[p](schema[p]);
             }
-            // Check Object Lengths
-            if (typeof schema[p] === "object" && schema[p] && Object.keys(schema[p]).length) {
-                lengths[p] = Object.keys(schema[p]).length;
-            }
-            // Peform Custom Tests
-            tested[p] = tests[p](schema[p]);
-
         }
     }
 
-    return {
-    types : types,
-    lengths : lengths,
-    tested : tested
-    };
+    return tested;
 };
 
 
@@ -141,7 +99,7 @@ var schemaDefaults = {
         pencil : {
             size : 3,
             blur : 0,
-            alpha : 100     
+            alpha : 100
         },
         eraser : {
             size : 10,
@@ -155,7 +113,15 @@ var schemaDefaults = {
 };
 
 
+var regExs = {
+    hexColor : /(^#[0-9A-F]{6}$)|(^#[0-9A-F]{3}$)/i
+};
 
+
+/*
+This example shows how multiple levels can be tested using nested
+callback-style approach
+ */
 
 var testsExample = {
     autokey       : function (val) { return isValid.boolean(val); },
