@@ -9,6 +9,7 @@ var StoreFront = function (defaults) { "use strict";
         _local = {},
         _defaults = defaults || {},
         
+        // Store.js v1.3.16 method wrappers
         _set = function (prop, value) {
             _local[prop] = value;
             if (store.enabled && _defaults.hasOwnProperty(prop)) {
@@ -31,6 +32,23 @@ var StoreFront = function (defaults) { "use strict";
             }
         },
 
+        _clear = function (prop) {
+            _local = {};
+            if (store.enabled) {
+                store.clear();
+            }
+        },
+
+        _forEach = function (callback) {
+            var prop;
+            for(prop in _local) {
+                if(_local.hasOwnProperty(prop)) {
+                    callback(prop, _local[prop]);
+                }
+            }
+        },
+
+        // StoreFront Methods
         _reset = function () {
             var prop;
             for(prop in _defaults) {
@@ -75,9 +93,12 @@ var StoreFront = function (defaults) { "use strict";
     _init();
 
     return {
+        set : _set,
         get : _get,
         getAll : _getAll,
-        set : _set,
-        reset : _reset
+        remove : _remove,
+        clear : _clear,
+        forEach : _forEach,
+        reset : _reset       
     };
 };
