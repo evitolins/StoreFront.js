@@ -23,6 +23,7 @@
     "tests"
   ],
   "dependencies": {
-    "store.js": "v1.3.16"
+    "store.js": "v1.3.16",
+    "lodash": "~2.4.1"
   }
 }
