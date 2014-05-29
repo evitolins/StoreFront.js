@@ -1,83 +1,13 @@
+/*jslint
+browser: true, devel: true, plusplus: true, unparam: true, todo: true, vars: true, white: true, nomen: true
+*/
+
+/*global _, isValid, StoreFront */
+
 /**
  * This page is more of an experiment at the time being
  */
-
-/**
- * Simple Verification Methods (leveraging lodash)
- * 'val' is required. All other arguments are optional.
- * @type {Object}
- */
-var isValid = {
-    boolean  : function (val) {
-        return _.isBoolean(val);
-    },
-    string   : function (val, regEx) {
-        var regExValid = (regEx !== undefined && _.isRegExp(regEx)) ? regEx.test(val) : true;
-        return (_.isString(val) && regExValid);
-    },
-    func     : function (val) {
-        return _.isFunction(val);
-    },
-    int      : function (val, min, max) {
-        var minValid = (min !== undefined && _.isNumber(min)) ? (val >= min) : true;
-        var maxValid = (max !== undefined && _.isNumber(max)) ? (val <= max) : true;
-        return (_.isNumber(val) && val % 1 === 0 && minValid && maxValid);
-    },
-    float    : function (val, min, max) {
-        var minValid = (min !== undefined && _.isNumber(min)) ? (val >= min) : true;
-        var maxValid = (max !== undefined && _.isNumber(max)) ? (val <= max) : true;
-        return (_.isNumber(val) && val % 1 !== 0 && minValid && maxValid);
-    },
-    array    : function (val, length, validateChildren) {
-        var parValid = (_.isArray(val) && val.length <= length),
-            childenValid = true,
-            i;
-        if (typeof validateChildren === "function") {
-            for (i = 0; i < val.length; i++) {
-                if (!validateChildren(val[i])) {
-                    console.log('invalid item match: ' + i + " : " + val[i]);
-                    childenValid = false;
-                    break;
-                }
-            }
-        }
-        return (parValid && childenValid);
-    },
-    object   : function (val, length, validateChildren) {
-        var parValid = (_.isPlainObject(val) && Object.keys(val).length <= length),
-            childenValid = true,
-            p;
-        if (typeof validateChildren === "function") {
-            for (p in val) {
-                if (val.hasOwnProperty(p) && !validateChildren(val[p])) {
-                    console.log('invalid prop match: ' + p + ' : ' + val[p]);
-                    childenValid = false;
-                    break;
-                }
-            }
-        }    
-        return (parValid && childenValid);
-    }
-};
-
-
-var verifyData = function (schema, tests) {
-    // Scan Schema for Types & Lengths
-    var tested = {},
-        p;
-
-    if (tests) {
-        for (p in schema) {
-            if (schema.hasOwnProperty(p)) {
-                tested[p] = tests[p](schema[p]);
-            }
-        }
-    }
-
-    return tested;
-};
-
-
+"use strict";
 
 var schemaDefaults = {
     autokey : true,
@@ -113,27 +43,31 @@ var schemaDefaults = {
 };
 
 
-var regExs = {
-    hexColor : /(^#[0-9A-F]{6}$)|(^#[0-9A-F]{3}$)/i
-};
-
-
 /*
 This example shows how multiple levels can be tested using nested
 callback-style approach
- */
 
+    _Using validation.js methods_
+
+    boolean  : function (val)
+    string   : function (val, regEx)
+    func     : function (val)
+    int      : function (val, min, max)
+    float    : function (val, min, max)
+    array    : function (val, length, validateChildren)
+    object   : function (val, length, validateChildren)
+ */
 var testsExample = {
     autokey       : function (val) { return isValid.boolean(val); },
     autofit       : function (val) { return isValid.boolean(val); },
-    color_current : function (val) { return isValid.string(val, regExs.hexColor); },
+    color_current : function (val) { return isValid.string(val, /(^#[0-9A-F]{6}$)|(^#[0-9A-F]{3}$)/i); },
     color_palette : function (val) { 
                         return isValid.array(val, 10,
                             function (child) {
-                                return isValid.string(child, regExs.hexColor);
-                            } )
+                                return isValid.string(child, /(^#[0-9A-F]{6}$)|(^#[0-9A-F]{3}$)/i);
+                            });
                     },
-    viewport      : function (val) { return isValid.object(val, 10)},
+    viewport      : function (val) { return isValid.object(val, 10); },
     brushes       : function (val) {
                         return isValid.object(val, 10, 
                             function (child) { 
@@ -149,5 +83,6 @@ var testsExample = {
 };
 
 // Test Data and Log Results
-var results = verifyData(schemaDefaults, testsExample);
+var sf = new StoreFront(schemaDefaults, testsExample);
+var results = sf.verify('autokey', 2);
 console.log(results);

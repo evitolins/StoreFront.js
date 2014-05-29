@@ -4,16 +4,46 @@ browser: true, devel: true, plusplus: true, unparam: true, todo: true, vars: tru
 
 /*global store */
 
-var StoreFront = function (defaults) { "use strict";
+var StoreFront = function (defaults, tests) { "use strict";
     var store = window.store || {},
         _local = {},
         _defaults = defaults || {},
+        _tests = tests || {},
         
+
+        // Test Data Against Test Schema for Types & Lengths
+        _verify = function (prop, value) {
+            var tested = {},
+                result = false;
+            if (_tests && _tests.hasOwnProperty(prop)) {
+                 result = _tests[prop](value);
+            } else {
+                console.error(prop + " does not have a test available.");
+                result = true; 
+            }
+
+            return result;
+        },
+        _verifyAll = function () {
+            var tested = {},
+                prop;
+            if (_tests) {
+                for (prop in _local) {
+                    if (_local.hasOwnProperty(prop)) {
+                        tested[prop] = _tests[prop](_local[prop]);
+                    }
+                }
+            }
+            return tested;
+        },
+
         // Store.js v1.3.16 method wrappers
         _set = function (prop, value) {
-            _local[prop] = value;
-            if (store.enabled && _defaults.hasOwnProperty(prop)) {
-                store.set(prop, value);
+            if (_verify(prop, value)) {
+                _local[prop] = value;
+                if (store.enabled && _defaults.hasOwnProperty(prop)) {
+                    store.set(prop, value);
+                }
             }
         },
 
@@ -99,6 +129,8 @@ var StoreFront = function (defaults) { "use strict";
         remove : _remove,
         clear : _clear,
         forEach : _forEach,
-        reset : _reset       
+        reset : _reset,
+        verify : _verify,
+        verifyAll : _verifyAll
     };
 };
