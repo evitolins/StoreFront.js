@@ -19,7 +19,7 @@ var StoreFront = function (defaults, tests) { "use strict";
                  result = _tests[prop](value);
             } else {
                 console.error(prop + " does not have a test available.");
-                result = true; 
+                result = true;
             }
 
             return result;
@@ -90,7 +90,7 @@ var StoreFront = function (defaults, tests) { "use strict";
 
         _init = function () {
             var prop;
-          
+
             if (!store.enabled) {
                 console.log('Store.js not found.  Session options will not be saved.');
                 _local = JSON.parse(JSON.stringify(_defaults));
@@ -107,7 +107,7 @@ var StoreFront = function (defaults, tests) { "use strict";
                     }
                 }
                 // Remove depreciated defaults
-                // Note: only first layer properties are detected)         
+                // Note: only first layer properties are detected)
                 for(prop in _local) {
                     if(_local.hasOwnProperty(prop) && !_defaults.hasOwnProperty(prop)) {
                         console.log('Depreciated property: ', prop);
@@ -117,7 +117,7 @@ var StoreFront = function (defaults, tests) { "use strict";
 
                 // Sync Again after changes
                 _local = store.getAll();
-            }          
+            }
         };
 
     _init();
