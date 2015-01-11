@@ -1,7 +1,7 @@
 StoreFront.js
 =============
 
-A store.js extension adding a basic data schema, value defaults, and input validation.
+A [store.js](https://github.com/marcuswestin/store.js) extension adding a basic data schema, value defaults, and input validation.
 
 > NOTE: This project is currently in alpha.  Features may not yet work as advertised.
 
@@ -17,7 +17,7 @@ StoreFront allows users to easily store and retrieve key pair values, while stor
 Defining 'defaults' object also defines a psedo-schema.  Upon instantiation, StoreFront detects changes to this schema and removes any depreciated keys stored locally.  This allows store.js' data to stay clean, as you alter your softwares "schema" in later versions.
 
 ## Dependencies
-[store.js](https://github.com/marcuswestin/store.js)
+[store.js](https://github.com/marcuswestin/store.js) (optional)
 
 ## How?
 > See 'example.js'
